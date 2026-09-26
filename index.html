@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Habit Studies</title>
+  <meta name="description" content="Seguimiento diario de estudio para SAT y TOEFL.">
+  <meta name="theme-color" content="#0b0f0e">
+  <meta name="color-scheme" content="dark light">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Studies">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.5c.6 3.2-1.2 5-2.7 6.6C7.8 10.7 6.5 12.3 6.5 15a5.5 5.5 0 0 0 11 0c0-2.1-.9-3.6-1.9-4.8-.3 1.3-1 2.2-2 2.6.4-3.5-.4-7.4-1.6-10.3Z" fill="currentColor"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></g></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <div class="app">
+    <!-- ============ HOY ============ -->
+    <main id="view-today" class="view" data-view="today">
+      <header class="top">
+        <div class="brand">
+          <img src="icons/icon.svg" alt="" width="28" height="28">
+          <div>
+            <p class="brand-date" id="today-label">—</p>
+            <p class="brand-phase" id="phase-label">—</p>
+          </div>
+        </div>
+        <a class="icon-btn" href="#/ajustes" aria-label="Ajustes"><svg><use href="#i-gear"/></svg></a>
+      </header>
+
+      <section class="streak card" id="streak" aria-live="polite">
+        <div class="streak-main">
+          <svg class="flame" aria-hidden="true"><use href="#i-flame"/></svg>
+          <span class="streak-num" id="streak-current">0</span>
+          <span class="streak-unit" id="streak-unit">días seguidos</span>
+        </div>
+        <div class="streak-meta">
+          <span>Récord <strong id="streak-best">0</strong></span>
+          <span class="streak-hint" id="streak-hint"></span>
+        </div>
+        <p class="next-milestone" id="next-milestone"></p>
+      </section>
+
+      <section class="section" aria-labelledby="h-check">
+        <div class="section-head">
+          <h2 id="h-check">Registro</h2>
+          <div class="day-nav">
+            <button class="icon-btn sm" id="day-prev" aria-label="Día anterior"><svg><use href="#i-back"/></svg></button>
+            <span class="day-nav-label" id="day-label">Hoy</span>
+            <button class="icon-btn sm" id="day-next" aria-label="Día siguiente"><svg><use href="#i-next"/></svg></button>
+          </div>
+        </div>
+        <div class="blocks" id="blocks"></div>
+      </section>
+
+      <section class="section" aria-labelledby="h-week">
+        <div class="section-head">
+          <h2 id="h-week">Esta semana</h2>
+          <span class="muted small" id="week-range"></span>
+        </div>
+        <div class="card week" id="week"></div>
+      </section>
+
+      <section class="section" aria-labelledby="h-heat">
+        <div class="section-head">
+          <h2 id="h-heat">Últimos 6 meses</h2>
+          <span class="muted small" id="heat-summary"></span>
+        </div>
+        <div class="card heat-card">
+          <div class="heat" id="heat"></div>
+          <div class="heat-foot">
+            <div class="heat-legend" aria-hidden="true">
+              <span>Menos</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>Más</span>
+            </div>
+          </div>
+          <div class="heat-detail" id="heat-detail" aria-live="polite"></div>
+          <div class="heat-empty" id="heat-empty" hidden>
+            <svg viewBox="0 0 220 120" aria-hidden="true" class="empty-art">
+              <defs>
+                <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0" stop-color="var(--h4)" stop-opacity=".55"/>
+                  <stop offset="1" stop-color="var(--h4)" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <g class="empty-grid"></g>
+              <circle cx="146" cy="62" r="30" fill="url(#glow)"/>
+              <rect x="138" y="54" width="16" height="16" rx="4" fill="var(--h4)"/>
+              <path d="M146 30v-9m0 72v-9m-32-22h9m46 0h9" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+            </svg>
+            <p><strong>Tu primer cuadro está esperando.</strong><br><span class="muted">Registra un bloque hoy y el mapa empieza a encenderse.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="h-count">
+        <div class="section-head">
+          <h2 id="h-count">Cuenta regresiva</h2>
+          <a class="link small" href="#/ajustes/fechas">Editar</a>
+        </div>
+        <div class="countdowns" id="countdowns"></div>
+      </section>
+
+      <footer class="foot muted small">Tus datos viven solo en este dispositivo. Exporta un respaldo de vez en cuando.</footer>
+    </main>
+
+    <!-- ============ AJUSTES ============ -->
+    <main id="view-settings" class="view" data-view="settings" hidden>
+      <header class="top">
+        <a class="icon-btn" href="#/" aria-label="Volver"><svg><use href="#i-back"/></svg></a>
+        <h1 class="top-title">Ajustes</h1>
+        <span class="icon-btn ghost" aria-hidden="true"></span>
+      </header>
+
+      <section class="section">
+        <h2>Apariencia</h2>
+        <div class="card row-between">
+          <span>Tema</span>
+          <div class="segmented" role="radiogroup" aria-label="Tema" id="theme-seg">
+            <button role="radio" data-theme-opt="dark">Oscuro</button>
+            <button role="radio" data-theme-opt="light">Claro</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Recordatorio diario</h2>
+        <div class="card stack">
+          <label class="row-between">
+            <span>Activar recordatorio</span>
+            <input type="checkbox" class="switch" id="rem-enabled">
+          </label>
+          <label class="row-between">
+            <span>Hora</span>
+            <input type="time" class="input w-auto" id="rem-time">
+          </label>
+          <p class="muted small" id="rem-status"></p>
+          <button class="btn ghost" id="rem-test">Probar notificación</button>
+          <details class="note">
+            <summary>¿Por qué a veces no llega a la hora exacta?</summary>
+            <p>Esta app no tiene servidor, así que el recordatorio se programa en tu propio dispositivo. Solo avisa si ese día todavía no registraste nada.</p>
+            <p><strong>Android (Chrome):</strong> funciona mejor. Con la app abierta o en segundo plano llega a la hora. Con la app cerrada, Chrome decide cuándo despertarla (sincronización periódica), así que puede llegar más tarde. Instálala como app para que esto funcione.</p>
+            <p><strong>iPhone (Safari):</strong> solo iOS 16.4+ y solo si la instalaste con <em>Compartir → Agregar a inicio</em>. Safari no permite despertar la app en segundo plano, así que en la práctica solo avisa mientras la app sigue abierta o reciente.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="section" id="sec-fechas">
+        <h2>Fechas clave</h2>
+        <div class="card stack" id="milestones-form"></div>
+      </section>
+
+      <section class="section">
+        <h2>Fases y metas semanales</h2>
+        <p class="muted small section-sub">Horas por semana. La meta de la semana usa la fase que contiene el día de hoy.</p>
+        <div class="stack" id="phases-form"></div>
+      </section>
+
+      <section class="section">
+        <h2>Datos</h2>
+        <div class="card stack">
+          <p class="muted small">El historial vive en el almacenamiento del navegador. Si borras los datos del navegador se pierde: exporta un respaldo JSON seguido.</p>
+          <div class="btn-row">
+            <button class="btn primary" id="btn-export">Exportar JSON</button>
+            <button class="btn ghost" id="btn-import">Importar JSON</button>
+            <input type="file" id="file-import" accept="application/json,.json" hidden>
+          </div>
+          <button class="btn ghost danger" id="btn-reset">Restablecer fechas y metas</button>
+        </div>
+      </section>
+      <footer class="foot muted small" id="about"></footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-msg"></span><button id="toast-action" hidden></button></div>
+
+  <dialog id="dlg" class="dlg">
+    <form method="dialog">
+      <h3 id="dlg-title"></h3>
+      <p id="dlg-body" class="muted"></p>
+      <div class="btn-row end">
+        <button value="cancel" class="btn ghost">Cancelar</button>
+        <button value="ok" class="btn primary" id="dlg-ok">Aceptar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
