@@ -1,6 +1,6 @@
 /* Habit Studies service worker.
    Bump VERSION whenever you change any app file so phones pick up the update. */
-const VERSION = 'hs-v1';
+const VERSION = 'hs-v2';
 const FONT_CACHE = 'hs-fonts';
 const META_CACHE = 'hs-meta';
 const META_URL = './__hs_meta';
@@ -10,6 +10,9 @@ const SHELL = [
   './index.html',
   './styles.css',
   './app.js',
+  './osf-core.js',
+  './osf.js',
+  './data/osf-plan.json',
   './manifest.json',
   './icons/icon.svg',
   './icons/icon-192.png',
@@ -95,18 +98,50 @@ async function maybeNotify() {
   await writeMeta(meta);
 }
 
+/* Hitos de la OSF: un aviso al día, a 7, 3, 1 y 0 días de cada fecha. Usa el mismo
+   interruptor y la misma hora que el recordatorio diario. */
+const HITO_DAYS = [7, 3, 1, 0];
+
+async function maybeNotifyHitos() {
+  const meta = await readMeta();
+  const r = meta.reminder;
+  if (!r || !r.enabled || !Array.isArray(meta.osfHitos)) return;
+  if (self.Notification && Notification.permission !== 'granted') return;
+  const now = new Date();
+  const today = keyOf(now);
+  if (meta.osfNotifiedDay === today) return;
+  const [h, m] = r.time.split(':').map(Number);
+  if (now.getHours() * 60 + now.getMinutes() < h * 60 + m) return;
+  const t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const due = meta.osfHitos.map((x) => {
+    const [y, mo, d] = String(x.fecha).split('-').map(Number);
+    return { titulo: x.titulo, dias: Math.round((new Date(y, mo - 1, d) - t0) / 864e5) };
+  }).filter((x) => HITO_DAYS.includes(x.dias));
+  if (!due.length) return;
+  await self.registration.showNotification('Olimpiada de Física', {
+    body: due.map((x) => `${x.titulo}: ${x.dias === 0 ? 'hoy' : x.dias === 1 ? 'mañana' : `en ${x.dias} días`}`).join(' · '),
+    icon: 'icons/icon-192.png',
+    badge: 'icons/icon-192.png',
+    tag: 'hs-osf-hito',
+  });
+  meta.osfNotifiedDay = today;
+  await writeMeta(meta);
+}
+
+const runReminders = () => maybeNotify().then(maybeNotifyHitos, maybeNotifyHitos);
+
 self.addEventListener('message', (e) => {
   const d = e.data || {};
   if (d.type === 'skip-waiting') self.skipWaiting();
   else if (d.type === 'reminder-config') {
-    e.waitUntil(readMeta().then((meta) => writeMeta({ ...meta, reminder: d.reminder, doneDay: d.doneDay })));
+    e.waitUntil(readMeta().then((meta) => writeMeta({ ...meta, reminder: d.reminder, doneDay: d.doneDay, ...(Array.isArray(d.osfHitos) ? { osfHitos: d.osfHitos } : {}) })));
   } else if (d.type === 'check-reminder') {
-    e.waitUntil(maybeNotify());
+    e.waitUntil(runReminders());
   }
 });
 
 self.addEventListener('periodicsync', (e) => {
-  if (e.tag === 'hs-daily-reminder') e.waitUntil(maybeNotify());
+  if (e.tag === 'hs-daily-reminder') e.waitUntil(runReminders());
 });
 
 self.addEventListener('notificationclick', (e) => {

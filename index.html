@@ -42,6 +42,11 @@
         <a class="icon-btn" href="#/ajustes" aria-label="Ajustes"><svg><use href="#i-gear"/></svg></a>
       </header>
 
+      <nav class="segmented mod-switch" aria-label="Módulo">
+        <a href="#/" aria-current="page">Beca</a>
+        <a href="#/osf">OSF</a>
+      </nav>
+
       <section class="streak card" id="streak" aria-live="polite">
         <div class="streak-main">
           <svg class="flame" aria-hidden="true"><use href="#i-flame"/></svg>
@@ -117,10 +122,35 @@
       <footer class="foot muted small">Tus datos viven solo en este dispositivo. Exporta un respaldo de vez en cuando.</footer>
     </main>
 
+    <!-- ============ OSF ============ -->
+    <main id="view-osf" class="view" data-view="osf" hidden>
+      <header class="top">
+        <div class="brand">
+          <img src="icons/icon.svg" alt="" width="28" height="28">
+          <div>
+            <p class="brand-date" id="osf-today-label">—</p>
+            <p class="brand-phase" id="osf-stage-label">—</p>
+          </div>
+        </div>
+        <a class="icon-btn" href="#/ajustes" aria-label="Ajustes"><svg><use href="#i-gear"/></svg></a>
+      </header>
+
+      <nav class="segmented mod-switch" aria-label="Módulo">
+        <a href="#/">Beca</a>
+        <a href="#/osf" aria-current="page">OSF</a>
+      </nav>
+
+      <nav class="osf-tabs" id="osf-tabs" aria-label="Secciones de la Olimpiada de Física"></nav>
+      <p class="osf-sim small" id="osf-sim" hidden></p>
+      <div id="osf-body"></div>
+
+      <footer class="foot muted small">Tu avance vive solo en este dispositivo. Exporta un respaldo de vez en cuando.</footer>
+    </main>
+
     <!-- ============ AJUSTES ============ -->
     <main id="view-settings" class="view" data-view="settings" hidden>
       <header class="top">
-        <a class="icon-btn" href="#/" aria-label="Volver"><svg><use href="#i-back"/></svg></a>
+        <a class="icon-btn" href="#/" id="settings-back" aria-label="Volver"><svg><use href="#i-back"/></svg></a>
         <h1 class="top-title">Ajustes</h1>
         <span class="icon-btn ghost" aria-hidden="true"></span>
       </header>
@@ -198,6 +228,8 @@
     </form>
   </dialog>
 
+  <script src="osf-core.js" defer></script>
+  <script src="osf.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

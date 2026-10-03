@@ -534,7 +534,7 @@
 
   /* ---------------------------------------------------------------- export / import */
   function exportData() {
-    const payload = { app: 'habit-studies', exportedAt: new Date().toISOString(), ...state };
+    const payload = { app: 'habit-studies', exportedAt: new Date().toISOString(), ...state, osf: window.OSF.exportState() };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -556,6 +556,7 @@
     const ok = await confirmDialog('Importar respaldo', `Esto reemplaza tus datos actuales (${nOld} días registrados) por los del respaldo (${nNew} días) y sus fechas y metas.`, 'Importar');
     if (!ok) return;
     state = next;
+    if (raw.osf && typeof raw.osf === 'object') window.OSF.importState(raw.osf); // respaldos viejos no traen osf: no se toca
     save(); selectedDay = todayKey(); heatSelected = null; heatAnimated = false;
     renderAll(); toast(`Respaldo importado · ${nNew} días`);
   }
@@ -593,6 +594,7 @@
       type: 'reminder-config',
       reminder: state.settings.reminder,
       doneDay: isDone(t) ? t : null,
+      osfHitos: window.OSF.hitosAviso(),
     });
   }
 
@@ -650,9 +652,15 @@
   function route() {
     const h = location.hash;
     const settings = h.startsWith('#/ajustes');
-    $('#view-today').hidden = settings;
+    const osf = h.startsWith('#/osf');
+    $('#view-today').hidden = settings || osf;
     $('#view-settings').hidden = !settings;
-    if (settings) {
+    $('#view-osf').hidden = !osf;
+    if (!settings) $('#settings-back').setAttribute('href', osf ? h : '#/');
+    if (osf) {
+      applyTheme();
+      window.OSF.show(h);
+    } else if (settings) {
       renderSettings();
       if (h === '#/ajustes/fechas') requestAnimationFrame(() => $('#sec-fechas').scrollIntoView({ block: 'start' }));
       else window.scrollTo(0, 0);
@@ -721,6 +729,7 @@
   bindBlocks();
   bindHeatmap();
   bindSettings();
+  window.OSF.init({ $, $$, esc, cap, clean, fmt, fmtMin, parseKey, todayKey, toast, confirmDialog, syncSW: syncReminderToSW });
   route();
   scheduleReminder();
   registerSW();
